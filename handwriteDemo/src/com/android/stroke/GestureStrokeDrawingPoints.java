@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.baidu.input_bbk.stroke;
+package com.android.stroke;
 
 /**
  * This class holds drawing points to represent a gesture stroke on the screen.

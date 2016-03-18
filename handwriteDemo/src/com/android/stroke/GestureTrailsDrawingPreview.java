@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.baidu.input_bbk.stroke;
+package com.android.stroke;
 
 import com.example.handwritedemo.CoordinateUtils;
 

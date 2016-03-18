@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.baidu.input_bbk.stroke;
+package com.android.stroke;
 
 /**
  * Interpolates XY-coordinates using Cubic Hermite Curve.
