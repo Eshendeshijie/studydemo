@@ -32,7 +32,7 @@
         android:focusable="true">
     </EditText>
     
-    <EditText
+    <com.example.eiditortext.NoImeEditText
         android:id="@+id/editText1"
         android:hint="@string/changesize"
         android:layout_width="wrap_content"
@@ -41,7 +41,7 @@
         android:layout_below="@+id/editText2"
         android:numeric="integer"
         android:singleLine="true" >
-    </EditText>
+    </com.example.eiditortext.NoImeEditText>
 
     <Button
         android:id="@+id/button1"

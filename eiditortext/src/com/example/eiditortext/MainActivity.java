@@ -64,7 +64,7 @@ public class MainActivity extends Activity {
 
     public TextView tv = null;
     public TextView ev2 = null;
-    public EditText et = null;
+    public NoImeEditText et = null;
     public ProgressBar pb = null;
     public int m_count = 0;
     //����������Ի���
@@ -89,7 +89,7 @@ public class MainActivity extends Activity {
         tv = (TextView) findViewById(R.id.textView1);
         tv.setTextSize(50);
         ev2 = (EditText) findViewById(R.id.editText2);
-        et = (EditText) findViewById(R.id.editText1);
+        et = (NoImeEditText) findViewById(R.id.editText1);
         ev2.addTextChangedListener(textChangeWatcher);
         ev2.requestFocus();
         ev2.setText(R.string.changesize);
