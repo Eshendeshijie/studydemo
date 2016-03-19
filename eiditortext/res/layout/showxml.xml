@@ -3,24 +3,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
 
-    <Button
-        android:id="@+id/pullmethod"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="获取url的xml" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
 
-    <Button
-        android:id="@+id/pullxml"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/pullmethod"
-        android:text="pull方式解析xml" />
-    
-    <TextView
-        android:id="@+id/cityweather"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="显示xml" />
+            <Button
+                android:id="@+id/locationBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="定位城市" />
+            <Button
+                android:id="@+id/pullmethod"
+                android:layout_toRightOf="@id/locationBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="获取url的xml" />
+
+            <Button
+                android:id="@+id/pullxml"
+                android:layout_toRightOf="@id/pullmethod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="pull方式解析" />
+
+            <TextView
+                android:id="@+id/cityweather"
+                android:layout_below="@id/locationBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="显示xml" />
+        </RelativeLayout>
+    </ScrollView>
 
 </LinearLayout>

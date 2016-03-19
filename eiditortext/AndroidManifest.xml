@@ -29,7 +29,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.eiditortext.PullXml" android:label="haaaaaaaaaaaaa">
+        <activity android:name="com.example.eiditortext.PullXml" android:label="Pull xml">
              <intent-filter>
 				<action android:name="android.intent.action.VIEW" /> 
 				<action android:name="android.intent.action.CHOOSER" /> 

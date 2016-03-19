@@ -80,10 +80,10 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v){
                 Intent intent=new Intent(Intent.ACTION_SEND);
-                intent.putExtra(Intent.EXTRA_SUBJECT, "����");
-                intent.putExtra(Intent.EXTRA_TEXT, "�ö�����������?");
-                startActivity(intent);
-                //startActivity(Intent.createChooser(intent, getTitle()));
+                intent.setType("image/jpeg");
+                intent.putExtra(Intent.EXTRA_SUBJECT, "image");
+                intent.putExtra(Intent.EXTRA_TEXT, "share image");
+                startActivity(Intent.createChooser(intent, getTitle()));
             }
          });
         tv = (TextView) findViewById(R.id.textView1);
@@ -96,7 +96,6 @@ public class MainActivity extends Activity {
         //ev2.setSelection(8);
         et.setKeyListener(ContactNumberListener.getInstance());
         et.addTextChangedListener(textChangeWatcher);
-        //ͨ��setsoftinputmode��������ģʽ
         //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         Button bt = (Button) findViewById(R.id.button1);
         Button bt_camara = (Button) findViewById(R.id.button2);
@@ -108,13 +107,12 @@ public class MainActivity extends Activity {
             public void onClick(View v) {  
                 pb.setVisibility(View.VISIBLE);
                 GetCSDNLogoTask task = new GetCSDNLogoTask();  
-                task.execute("http://preview.mail.163.com/xdownload?filename=301-魏晨.jpg&mid=1tbiWAFGfVEAG2YKLQAAsp&part=5&sign=c36eb108aefc0280b9a915d3c231c39c&time=1394087544&uid=bbkteam1@163.com");
+                task.execute("http://img5q.duitang.com/uploads/item/201501/13/20150113172050_RJArr.jpeg");
                 //task.execute("http://t1.baidu.com/it/u=http%3A%2F%2Fwww.cenews.com.cn%2Ffzxw%2Ffzyw%2F201403%2FW020140305346571446884.jpg&fm=30");  
             }  
         });
         Button bt_pullxml = (Button) findViewById(R.id.pullxml);
 
-        //����mButton02���¼�����
         bt_pullxml.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v)
@@ -123,31 +121,22 @@ public class MainActivity extends Activity {
                
                 m_count = 0;
                
-                // ����ProgressDialog����
                 m_pDialog = new ProgressDialog(MainActivity.this);
                
-                // ���ý������񣬷��Ϊ����
                 m_pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                
-                // ����ProgressDialog ����
-                m_pDialog.setTitle("��ʾ");
+                m_pDialog.setTitle("解析xml");
                
-                // ����ProgressDialog ��ʾ��Ϣ
-                m_pDialog.setMessage("����һ�����ζԻ�������");
+                m_pDialog.setMessage("解析进度");
                
-                // ����ProgressDialog ����ͼ��
                 //m_pDialog.setIcon(R.drawable.img2);
                
-                // ����ProgressDialog ��������
                 m_pDialog.setProgress(100);
                
-                // ����ProgressDialog �Ľ�����Ƿ���ȷ
                 m_pDialog.setIndeterminate(false);
                
-                // ����ProgressDialog �Ƿ���԰��˻ذ���ȡ��
                 m_pDialog.setCancelable(true);
                
-                // ��ProgressDialog��ʾ
                 m_pDialog.show();
                
                 new Thread()
@@ -201,10 +190,10 @@ public class MainActivity extends Activity {
            @Override
            public void onClick(View v){
                Intent intent=new Intent(Intent.ACTION_SEND);
-               intent.setType("text/x-vcard");
-               intent.putExtra(Intent.EXTRA_SUBJECT, "����");
-               intent.putExtra(Intent.EXTRA_TEXT, "�ö�����������?");
-               Intent chooserintent = createChooser(MainActivity.this, intent, "hahahhah", "com.android.filemanager", "com.tencent.mobileqq");
+               intent.setType("text/plain");
+               intent.putExtra(Intent.EXTRA_SUBJECT, "share subject");
+               intent.putExtra(Intent.EXTRA_TEXT, "share text");
+               Intent chooserintent = createChooser(MainActivity.this, intent, "share dialog", "com.android.filemanager", "com.tencent.mm");
                //intent.setComponent(new ComponentName("com.android.mms", "com.android.mms.ui.ComposeMessageActivity"));
                startActivity(chooserintent);
                //startActivity(Intent.createChooser(intent, getTitle()));
@@ -336,14 +325,14 @@ public class MainActivity extends Activity {
         return outStream.toByteArray();      
     }
     
-    class GetCSDNLogoTask extends AsyncTask<String,Integer,Bitmap> {//�̳�AsyncTask  
+    class GetCSDNLogoTask extends AsyncTask<String,Integer,Bitmap> {//AsyncTask  
         
         @Override  
-        protected Bitmap doInBackground(String... params) {//�����ִ̨�е������ں�̨�߳�ִ��  
-            publishProgress(0);//�������onProgressUpdate(Integer... progress)����  
+        protected Bitmap doInBackground(String... params) {//
+            publishProgress(0);
             HttpClient hc = new DefaultHttpClient();  
             publishProgress(30);  
-            HttpGet hg = new HttpGet(params[0]);//��ȡcsdn��logo  
+            HttpGet hg = new HttpGet(params[0]);
             Log.v("zswww",hg.toString());
             final Bitmap bm;  
             try {  
@@ -358,31 +347,31 @@ public class MainActivity extends Activity {
                 return null;  
             }  
             publishProgress(100);  
-            //mImageView.setImageBitmap(result); �����ں�̨�̲߳���ui  
+            //mImageView.setImageBitmap(result); 
             return bm;  
         }  
           
-        protected void onProgressUpdate(Integer... progress) {//�ڵ���publishProgress֮�󱻵��ã���ui�߳�ִ��  
-            pb.setProgress(progress[0]);//���½�����Ľ��  
+        protected void onProgressUpdate(Integer... progress) {
+            pb.setProgress(progress[0]);
          }  
   
-         protected void onPostExecute(Bitmap result) {//��̨����ִ����֮�󱻵��ã���ui�߳�ִ��  
+         protected void onPostExecute(Bitmap result) {
              pb.setVisibility(View.GONE);
              if(result != null) {  
-                 Toast.makeText(MainActivity.this, "�ɹ���ȡͼƬ", Toast.LENGTH_LONG).show();  
+                 Toast.makeText(MainActivity.this, "下载完成", Toast.LENGTH_LONG).show();  
                  lblImage.setImageBitmap(result);  
              }else {  
-                 Toast.makeText(MainActivity.this, "��ȡͼƬʧ��", Toast.LENGTH_LONG).show();  
+                 Toast.makeText(MainActivity.this, "下载失败", Toast.LENGTH_LONG).show();  
              }  
          }  
            
-         protected void onPreExecute () {//�� doInBackground(Params...)֮ǰ�����ã���ui�߳�ִ��  
+         protected void onPreExecute () {
              lblImage.setImageBitmap(null);  
-             pb.setProgress(0);//�������λ  
+             pb.setProgress(0);
          }  
            
-         protected void onCancelled () {//��ui�߳�ִ��  
-             pb.setProgress(0);//�������λ  
+         protected void onCancelled () {
+             pb.setProgress(0);
          }  
           
     }
@@ -401,14 +390,15 @@ public class MainActivity extends Activity {
             if(charsequence != "" || charsequence != null){
                 int a = 121 /2 ;
                 Log.v("zsww","aaaaa=="+a);
-            //tv.setText(ev2.getText().toString());
-                tv.setText("བ");
+                //tv.setText(ev2.getText().toString());
+                tv.setText(ev2.getText().toString());
                 Typeface fontFace = Typeface.createFromAsset(MainActivity.this.getAssets(), "DDC_Uchen.ttf");
                 //System.out.println(fontFace);
                 // 字体文件必须是true type font的格式(ttf)；
                 // 当使用外部字体却又发现字体没有变化的时候(以 Droid Sans代替)，
                 // 通常是因为这个字体android没有支持,而非你的程序发生了错误
                 tv.setTypeface(fontFace);
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
 
             if(et.getText().toString().length() == 0)return;
             tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, Math.max(Integer.parseInt(et.getText().toString()), 1));
@@ -419,7 +409,7 @@ public class MainActivity extends Activity {
             }
         }
 
-        boolean flag = false;// �����Ƿ��ظ�ִ������sppanable
+        boolean flag = false;
         int insert = 0;
         int inputCount = 0;
 
@@ -430,7 +420,6 @@ public class MainActivity extends Activity {
                 int tempInsert = insert;
                 // ChatMessage cm = new ChatMessage();
                 // cm.setMsg(editable.toString());
-                // //���Ҫ����������ݽ��д��?�����flag���ƣ��������ѭ��
                 // ChatMessageDao.setFormaterEditText(mEtMsgEdit, cm,
                 // mContext);
                 // mEtMsgEdit.setSelection(tempInsert + temp);
@@ -503,7 +492,7 @@ public class MainActivity extends Activity {
                             String inputName = inputServer.getText().toString();
                              AlertDialog.Builder at = new
                              AlertDialog.Builder(MainActivity.this);
-                             at.setMessage("�罻���������������������꿪�����ظ������޺��̷��˷�����񿪷����׿������밣˹���޿�����˿�ʦ��");
+                             at.setMessage("在调出键盘的dialog上弹出dialog");
                              at.setPositiveButton("ok", null);
                              at.show();
                         } catch (Exception e) {
@@ -517,11 +506,9 @@ public class MainActivity extends Activity {
         try {
             Field field  =  ad.getClass().getDeclaredField( "mAlert" );
             field.setAccessible( true );
-            //   ���mAlert������ֵ 
             Object obj  =  field.get(ad);
             field  =  obj.getClass().getDeclaredField( "mHandler" );
             field.setAccessible( true );
-            //   �޸�mHandler������ֵ��ʹ���µ�ButtonHandler�� 
             field.set(obj, new ButtonHandler(ad));
             //dialog.dismiss();
             // String inputName =
@@ -549,7 +536,6 @@ public class MainActivity extends Activity {
 //        Intent camera_intent = new Intent();  
 //        camera_intent.setAction("android.media.action.IMAGE_CAPTURE");    
 //        startActivityForResult(camera_intent,0);
-        //�����
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, CAMERA_WITH_DATA);
         

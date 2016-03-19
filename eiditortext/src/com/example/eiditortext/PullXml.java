@@ -1,13 +1,21 @@
 package com.example.eiditortext;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,23 +41,51 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PullXml extends Activity {
     public TextView textxml = null;
     public ArrayList<City> WeatherInfo = new ArrayList<City>();
+    private final String WEATHER_URL_START = "http://php.weather.sina.com.cn/xml.php?city=";
+    private final String WEATHER_URL_END = "&password=DJOYnieT8234jlsK&day=0";
+    private String mCurrentCity = "åŒ—äº¬";
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.showxml);
         LayoutInflater inflater = getLayoutInflater();
         textxml = (TextView) findViewById(R.id.cityweather);
+        Button locationBtn = (Button) findViewById(R.id.locationBtn);
+        locationBtn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				 LocationManager locationManager;  
+			        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);  
+			        String provider = LocationManager.NETWORK_PROVIDER;  
+			        Criteria criteria = new Criteria();  
+			        criteria.setAccuracy(Criteria.ACCURACY_FINE);  
+			        criteria.setAltitudeRequired(false);  
+			        criteria.setBearingRequired(false);  
+			        criteria.setCostAllowed(true);  
+			        criteria.setPowerRequirement(Criteria.POWER_LOW);  
+			        Location location = locationManager.getLastKnownLocation(provider);  
+			        updateWithNewLocation(location);  
+			        locationManager.requestLocationUpdates(provider, 2000, 10, locationListener);  
+			        getEncode("æ·±åœ³", "utf-8", INT_DEC);
+			}
+		});
         Button bt_geturl = (Button) findViewById(R.id.pullmethod);
         bt_geturl.setOnClickListener(new OnClickListener() {  
             @Override  
             public void onClick(View v) {  
                 GetCityWeatherTask task = new GetCityWeatherTask();  
-                task.execute("http://php.weather.sina.com.cn/xml.php?city=%B1%B1%BE%A9&password=DJOYnieT8234jlsK&day=0");  
+                task.execute(getCityUrl(mCurrentCity));  
             }  
         });
         Button  bt_pull = (Button) findViewById(R.id.pullxml);
@@ -60,13 +96,13 @@ public class PullXml extends Activity {
                       
                   }
                 else {
-                    // ¶¨Òå¹¤³§ XmlPullParserFactory
+                    //  XmlPullParserFactory
                     XmlPullParserFactory factory;
                     try {
                         factory = XmlPullParserFactory.newInstance();
-                        // ¶¨Òå½âÎöÆ÷ XmlPullParser
+                        //  XmlPullParser
                         XmlPullParser parser = factory.newPullParser();
-                        //»ñÈ¡xmlµÄstringÊı¾İ
+                        // è§£æèŠ‚ç‚¹æ•°æ®
                         parser.setInput(new StringReader(CityWeather));
                         WeatherInfo = ParseXml(parser);
                         if(WeatherInfo == null){
@@ -92,9 +128,9 @@ public class PullXml extends Activity {
     
     public String CityWeather = null;
     
-    class GetCityWeatherTask extends AsyncTask<String, Integer, String> {// ¼Ì³ĞAsyncTask
+    class GetCityWeatherTask extends AsyncTask<String, Integer, String> {
         @Override
-        protected String doInBackground(String... params) {// ´¦ÀíºóÌ¨Ö´ĞĞµÄÈÎÎñ£¬ÔÚºóÌ¨Ïß³ÌÖ´ĞĞ
+        protected String doInBackground(String... params) {
             try {
                 CityWeather = getStringByUrl(params[0]);
                 Log.v("zswww", "return weather");
@@ -105,20 +141,20 @@ public class PullXml extends Activity {
             return CityWeather;
         }
 
-        protected void onPostExecute(String result) {// ºóÌ¨ÈÎÎñÖ´ĞĞÍêÖ®ºó±»µ÷ÓÃ£¬ÔÚuiÏß³ÌÖ´ĞĞ
+        protected void onPostExecute(String result) {
             if (result != null) {
-                Toast.makeText(PullXml.this, "³É¹¦»ñÈ¡ÌìÆø", Toast.LENGTH_LONG).show();
+                Toast.makeText(PullXml.this, "è§£ææˆåŠŸ", Toast.LENGTH_LONG).show();
                 textxml.setText(CityWeather);
             } else {
-                Toast.makeText(PullXml.this, "»ñÈ¡ÌìÆøÊ§°Ü", Toast.LENGTH_LONG).show();
+                Toast.makeText(PullXml.this, "è§£æå¤±è´¥", Toast.LENGTH_LONG).show();
             }
         }
     }
     
     /**
-     * Í¬ÑùÉ¾³ıÊ×ĞĞ£¬²ÅÄÜ½âÎö³É¹¦£¬
+     * Í¬ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½Ğ£ï¿½ï¿½ï¿½ï¿½Ü½ï¿½ï¿½ï¿½ï¿½É¹ï¿½ï¿½ï¿½
      * @param fileName
-     * @return ·µ»ØxmlÎÄ¼şµÄinputStream
+     * @return ï¿½ï¿½ï¿½ï¿½xmlï¿½Ä¼ï¿½ï¿½ï¿½inputStream
      */     
     public InputStream getInputStreamFromAssets(String fileName){
         try {
@@ -131,19 +167,19 @@ public class PullXml extends Activity {
     }
 
     /**
-     * ¶ÁÈ¡XMLÎÄ¼ş£¬xmlÎÄ¼ş·Åµ½res/xmlÎÄ¼ş¼ĞÖĞ£¬ÈôXMLÎª±¾µØÎÄ¼ş£¬ÔòÍÆ¼ö¸Ã·½·¨
+     * ï¿½ï¿½È¡XMLï¿½Ä¼ï¿½ï¿½ï¿½xmlï¿½Ä¼ï¿½ï¿½Åµï¿½res/xmlï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ğ£ï¿½ï¿½ï¿½XMLÎªï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¼ï¿½ï¿½Ã·ï¿½ï¿½ï¿½
      * 
      * @param fileName
-     * @return : ¶ÁÈ¡µ½res/xmlÎÄ¼ş¼ĞÏÂµÄxmlÎÄ¼ş£¬·µ»ØXmlResourceParser¶ÔÏó£¨XmlPullParserµÄ×ÓÀà£©
+     * @return : ï¿½ï¿½È¡ï¿½ï¿½res/xmlï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Âµï¿½xmlï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½XmlResourceParserï¿½ï¿½ï¿½ï¿½XmlPullParserï¿½ï¿½ï¿½ï¿½ï¿½à£©
      */
     public XmlResourceParser getXMLFromResXml(String fileName){
         XmlResourceParser xmlParser = null;
         try {
             //*/
-            //  xmlParser = this.getResources().getAssets().openXmlResourceParser("assets/"+fileName);        // Ê§°Ü,ÕÒ²»µ½ÎÄ¼ş
+            //  xmlParser = this.getResources().getAssets().openXmlResourceParser("assets/"+fileName);        // Ê§ï¿½ï¿½,ï¿½Ò²ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
             //xmlParser = this.getResources().getXml(R.xml.provinceandcity);
             /*/
-            // xmlÎÄ¼şÔÚresÄ¿Â¼ÏÂ Ò²¿ÉÒÔÓÃ´Ë·½·¨·µ»ØinputStream
+            // xmlï¿½Ä¼ï¿½ï¿½ï¿½resÄ¿Â¼ï¿½ï¿½ Ò²ï¿½ï¿½ï¿½ï¿½ï¿½Ã´Ë·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½inputStream
             InputStream inputStream = this.getResources().openRawResource(R.xml.provinceandcity);
             /*/
             return xmlParser;
@@ -154,9 +190,9 @@ public class PullXml extends Activity {
     }
 
     /**
-     * ¶ÁÈ¡urlµÄxml×ÊÔ´ ×ª³ÉString
+     * ï¿½ï¿½È¡urlï¿½ï¿½xmlï¿½ï¿½Ô´ ×ªï¿½ï¿½String
      * @param url
-     * @return ·µ»Ø ¶ÁÈ¡urlµÄxml×Ö·û´®
+     * @return ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¡urlï¿½ï¿½xmlï¿½Ö·ï¿½ï¿½ï¿½
      */
     public String getStringByUrl(String url) {
         String outputString = "";
@@ -168,10 +204,8 @@ public class PullXml extends Activity {
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
         try {
             outputString = httpclient.execute(httpget, responseHandler);            
-            outputString = new String(outputString.getBytes("ISO-8859-1"), "utf-8");    // ½â¾öÖĞÎÄÂÒÂë
-            Log.i("HttpClientConnector", "Á¬½Ó³É¹¦");
+            outputString = new String(outputString.getBytes("ISO-8859-1"), "utf-8");    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         } catch (Exception e) {
-            Log.i("HttpClientConnector", "Á¬½ÓÊ§°Ü");
             e.printStackTrace();
         }
         httpclient.getConnectionManager().shutdown();
@@ -179,13 +213,13 @@ public class PullXml extends Activity {
     }
 
     /**
-     * ½âÎöSDcard xmlÎÄ¼ş
+     * ï¿½ï¿½ï¿½ï¿½SDcard xmlï¿½Ä¼ï¿½
      * @param fileName
-     * @return ·µ»ØxmlÎÄ¼şµÄinputStream
+     * @return ï¿½ï¿½ï¿½ï¿½xmlï¿½Ä¼ï¿½ï¿½ï¿½inputStream
      */     
     public InputStream getInputStreamFromSDcard(String fileName){
         try {
-            // Â·¾¶¸ù¾İÊµ¼ÊÏîÄ¿ĞŞ¸Ä
+            // Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½Ä¿ï¿½Ş¸ï¿½
             String path = Environment.getExternalStorageDirectory().toString() + "/test_xml/";
 
             Log.v("", "path : " + path);
@@ -244,19 +278,19 @@ public class PullXml extends Activity {
         String status = null;
         CityTemp = new City();
         try {
-            //¿ªÊ¼½âÎöÊÂ¼ş
+            //ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
             int eventType = parser.getEventType();
 
-            //´¦ÀíÊÂ¼ş£¬²»Åöµ½ÎÄµµ½áÊø¾ÍÒ»Ö±´¦Àí
+            //ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»Ö±ï¿½ï¿½ï¿½ï¿½
             while (eventType != XmlPullParser.END_DOCUMENT) {
-                //ÒòÎª¶¨ÒåÁËÒ»¶Ñ¾²Ì¬³£Á¿£¬ËùÒÔÕâÀï¿ÉÒÔÓÃswitch
+                //ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½Ñ¾ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½switch
                 switch (eventType) {
                     case XmlPullParser.START_DOCUMENT:
                         break;
 
                     case XmlPullParser.START_TAG:
 
-                        //¸øµ±Ç°±êÇ©Æğ¸öÃû×Ö
+                        //ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½Ç©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                         String tagName = parser.getName();
                         Log.d("zsww", "====XmlPullParser.START_TAG=== tagName: " + tagName);
 
@@ -267,7 +301,7 @@ public class PullXml extends Activity {
                         }else if(tagName.equals("status1")){
                             status = parser.nextText();
                         }else if(tagName.equals("temperature1")){
-                            temperature = parser.nextText() + "¶È";                          
+                            temperature = parser.nextText() + "â„ƒ";                          
                             parser.next();
                            
                             Log.v("zsww", "status getText: "+status);
@@ -287,7 +321,7 @@ public class PullXml extends Activity {
                         break;
                 }
 
-                //±ğÍüÁËÓÃnext·½·¨´¦ÀíÏÂÒ»¸öÊÂ¼ş£¬ÍüÁËµÄ½á¹û¾Í³ÉËÀÑ­»·#_#
+                //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½nextï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ËµÄ½ï¿½ï¿½ï¿½Í³ï¿½ï¿½ï¿½Ñ­ï¿½ï¿½#_#
                 eventType = parser.next();
             }
         } catch (XmlPullParserException e) {
@@ -299,4 +333,141 @@ public class PullXml extends Activity {
         }
         return CityArray;
     }
+    
+    //å®šä½ä½ç½®
+    private final LocationListener locationListener = new LocationListener() {  
+        public void onLocationChanged(Location location) {  
+        updateWithNewLocation(location);  
+        }  
+        public void onProviderDisabled(String provider){  
+        updateWithNewLocation(null);  
+        }  
+        public void onProviderEnabled(String provider){ }  
+        public void onStatusChanged(String provider, int status,  
+        Bundle extras){ }  
+    }; 
+    
+    private void updateWithNewLocation(Location location) {  
+        String latLongString;  
+		if (location != null) {
+			double lat = location.getLatitude();
+			double lng = location.getLongitude();
+			latLongString = "çº¬åº¦:" + lat + "\nç»åº¦:" + lng;
+			List<Address> addList = null;  
+	        Geocoder ge = new Geocoder(this);  
+	        try {  
+	            addList = ge.getFromLocation(lat, lng, 1);  
+	        } catch (IOException e) {  
+	            // TODO Auto-generated catch block  
+	            e.printStackTrace();  
+	        }  
+	        if(addList!=null && addList.size()>0){  
+	            for(int i=0; i<addList.size(); i++){  
+	                Address ad = addList.get(i);  
+	                latLongString += "\n";  
+	                latLongString += ad.getCountryName() + ";" + ad.getLocality();  
+	                mCurrentCity = ad.getLocality();
+	            }  
+	        }
+	        mCurrentCity = mCurrentCity.substring(0, mCurrentCity.length() - 1);
+		} else {
+			latLongString = "æ— æ³•è·å–åœ°ç†ä¿¡æ¯";
+		}  
+        textxml.setText("æ‚¨å½“å‰çš„ä½ç½®æ˜¯:\n" +latLongString);  
+    }  
+    
+    private String getCityUrl(String cityname) {
+    	if(TextUtils.isEmpty(cityname)) {
+    		cityname = "åŒ—äº¬";
+    	}
+    	String gbkOfCity = getEncode(cityname, "gb2312", INT_HEX);//Utf8Togb2312Encode(cityname);
+		Log.v("zsw_show", "city url : "+cityname+"=="+gbkOfCity);
+		StringBuilder cityUrl = new StringBuilder().append(WEATHER_URL_START).append(gbkOfCity).append(WEATHER_URL_END);
+    	return cityUrl.toString();
+    }
+    
+	public static String utf8Togb2312(String str) {
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < str.length(); i++) {
+			char c = str.charAt(i);
+			switch (c) {
+			case '+':
+				sb.append(' ');
+				break;
+			case '%':
+				try {
+					sb.append((char) Integer.parseInt(
+					str.substring(i + 1, i + 3), 16));
+				}
+				catch (NumberFormatException e) {
+					throw new IllegalArgumentException();
+				}
+				i += 2;
+				break;
+			default:
+				sb.append(c);
+				break;
+			}
+		}
+		String result = sb.toString();
+		String res = null;
+		try {
+			byte[] inputBytes = result.getBytes("8859_1");
+			res = new String(inputBytes, "UTF-8");
+		}
+		catch (Exception e) {
+		}
+		return res;
+	}
+	
+	public static String Utf8Togb2312Encode(String str) {
+		String urlEncode = "";
+		try {
+			urlEncode = URLEncoder.encode(str, "GB2312");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return urlEncode;
+	}
+	
+	// form of output : %XX%XX%XX...
+    private final int INT_BINARY = 0; //äºŒè¿›åˆ¶
+    private final int INT_OCTAL = 1;  //å…«è¿›åˆ¶
+    private final int INT_HEX = 2;    //åå…­è¿›åˆ¶
+    private final int INT_DEC = 3;    //åè¿›åˆ¶ 
+	private String getEncode(String str, String outputEncode, final int radix) {
+		String result = "";
+		String origne = "";
+		try {
+		    byte[] outputEncodeByte = str.getBytes(outputEncode);
+		    for(int i = 0; i < outputEncodeByte.length; i++) {
+		    	if(outputEncodeByte[i] < 0) {
+		    		result += "%";
+		    	}
+				switch (radix) {
+				case INT_BINARY:
+					result += Integer.toBinaryString(outputEncodeByte[i] & 0x000000FF);
+					origne += Integer.toBinaryString(outputEncodeByte[i]);
+					break;
+				case INT_OCTAL:
+					result += Integer.toOctalString(outputEncodeByte[i] & 0x000000FF);
+					origne += Integer.toOctalString(outputEncodeByte[i]);
+					break;
+				case INT_HEX:
+					result += Integer.toHexString(outputEncodeByte[i] & 0x000000FF);
+					origne += Integer.toHexString(outputEncodeByte[i]);
+					break;
+				case INT_DEC:
+				default:
+					result += outputEncodeByte[i] & 0x000000FF;
+					origne += outputEncodeByte[i];
+					break;
+				}
+		    }
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
 }

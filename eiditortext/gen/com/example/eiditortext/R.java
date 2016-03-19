@@ -24,18 +24,19 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int action_settings=0x7f080016;
+        public static final int action_settings=0x7f080017;
         public static final int button1=0x7f080003;
         public static final int button2=0x7f080004;
         public static final int button3=0x7f080009;
         public static final int button4=0x7f08000d;
         public static final int button5=0x7f080012;
-        public static final int cityweather=0x7f080015;
+        public static final int cityweather=0x7f080016;
         public static final int editText1=0x7f080002;
         public static final int editText2=0x7f080001;
         public static final int editText3=0x7f080005;
         public static final int editText4=0x7f080006;
         public static final int image=0x7f080007;
+        public static final int locationBtn=0x7f080014;
         public static final int newsdes=0x7f080010;
         public static final int newsedittext=0x7f080011;
         public static final int newsimage=0x7f08000e;
@@ -43,7 +44,7 @@ public final class R {
         public static final int newsrss=0x7f08000b;
         public static final int newstitle=0x7f08000f;
         public static final int progressBar1=0x7f080008;
-        public static final int pullmethod=0x7f080014;
+        public static final int pullmethod=0x7f080015;
         public static final int pullxml=0x7f08000a;
         public static final int seekBar1=0x7f08000c;
         public static final int textView1=0x7f080000;
