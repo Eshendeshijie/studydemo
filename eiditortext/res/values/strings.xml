@@ -6,5 +6,6 @@
     <string name="hello_world">根据编辑框的内容变化</string>
     <string name="changesize">输入大小，单位为sp</string>
     <string name="changetext">输入要显示的字符</string>
+    <string name="activity_back">返回</string>
 
 </resources>

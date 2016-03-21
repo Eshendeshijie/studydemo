@@ -7,140 +7,144 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
-    <ScrollView 
+
+    <ScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <RelativeLayout 
+        android:layout_height="wrap_content" >
+
+        <RelativeLayout
             android:layout_width="wrap_content"
-        	android:layout_height="wrap_content">
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Really long text that needs to be ellipsized here" 
-        android:autoLink="phone"/>
-    
-    <EditText
-        android:id="@+id/editText2"
-        android:hint="@string/changetext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_below="@+id/textView1"
-        android:ems="10" 
-        android:textCursorDrawable="@drawable/ic_launcher"
-        android:focusable="true">
-    </EditText>
-    
-    <com.example.eiditortext.NoImeEditText
-        android:id="@+id/editText1"
-        android:hint="@string/changesize"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/editText2"
-        android:layout_below="@+id/editText2"
-        android:numeric="integer"
-        android:singleLine="true" >
-    </com.example.eiditortext.NoImeEditText>
+            android:layout_height="wrap_content" >
 
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/editText1"
-        android:layout_below="@+id/editText1"
-        android:layout_marginTop="16dp"
-        android:text="Button"
-        android:onClick="clicklistener" />
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoLink="phone"
+                android:text="Really long text that needs to be ellipsized here" />
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button1"
-        android:layout_below="@+id/button1"
-        android:layout_marginTop="16dp"
-        android:text="拍照"
-        android:onClick="clicklistener_camera" />
-    
-    <EditText
-        android:id="@+id/editText3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button2"
-        android:layout_below="@+id/button2"
-        android:layout_marginTop="14dp"
-        android:ems="10" 
-        android:inputType="textPassword" />
+            <EditText
+                android:id="@+id/editText2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textView1"
+                android:layout_below="@+id/textView1"
+                android:ems="10"
+                android:focusable="true"
+                android:hint="@string/changetext"
+                android:textCursorDrawable="@drawable/ic_launcher" >
+            </EditText>
 
-    <EditText
-        android:id="@+id/editText4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/editText3"
-        android:layout_below="@+id/editText3"
-        android:layout_marginTop="14dp"
-        android:ems="10"
-        android:inputType="textEmailAddress" />
+            <EditText
+                android:id="@+id/editText1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/editText2"
+                android:layout_below="@+id/editText2"
+                android:hint="@string/changesize"
+                android:numeric="integer"
+                android:singleLine="true" >
+            </EditText>
 
+            <Button
+                android:id="@+id/button1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/editText1"
+                android:layout_below="@+id/editText1"
+                android:layout_marginTop="16dp"
+                android:onClick="clicklistener"
+                android:text="Button" />
 
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/editText4"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/button1"
-        android:layout_toRightOf="@+id/editText4"
-        android:src="@drawable/ic_launcher" />
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/button1"
+                android:layout_below="@+id/button1"
+                android:layout_marginTop="16dp"
+                android:onClick="clicklistener_camera"
+                android:text="拍照" />
 
-    <ProgressBar
-        android:id="@+id/progressBar1"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/button1"
-        android:layout_centerHorizontal="true" 
-        android:visibility="gone"/>
+            <Button
+                android:id="@+id/button3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/button1"
+                android:layout_below="@+id/button2"
+                android:layout_marginTop="16dp"
+                android:text="自定义键盘" />
 
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/button2"
-        android:layout_toRightOf="@id/button1"
-        android:text="异步下载图片" />
-    
-    <Button
-        android:id="@+id/pullxml"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/editText4"
-        android:text="加载xml文件" />
-    
-    <Button
-        android:id="@+id/newsrss"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/editText4"
-        android:layout_toRightOf="@id/pullxml"
-        android:text="新闻RSS" />
+            <FrameLayout
+                android:layout_width="80dip"
+                android:layout_height="80dip"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@id/button1"
+                android:layout_toRightOf="@+id/button4" >
 
-    <SeekBar
-        android:id="@+id/seekBar1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/pullxml"
-        android:layout_marginTop="18dp" />
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_launcher" />
 
-    <Button
-        android:id="@+id/button4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/editText3"
-        android:layout_alignLeft="@+id/button3"
-        android:text="share" />
-    </RelativeLayout>
-</ScrollView>
+                <ProgressBar
+                    android:id="@+id/progressBar1"
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/button4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/button2"
+                android:layout_toRightOf="@id/button1"
+                android:text="异步下载图片" />
+
+            <Button
+                android:id="@+id/pullxml"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/button2"
+                android:layout_toRightOf="@id/button2"
+                android:text="加载xml文件" />
+
+            <Button
+                android:id="@+id/newsrss"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/button3"
+                android:layout_toRightOf="@id/button3"
+                android:text="新闻RSS" />
+            
+            <Button
+                android:id="@+id/button5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/button3"
+                android:layout_toRightOf="@id/newsrss"
+                android:text="share" />
+            
+            <Button
+                android:id="@+id/button_custom_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_below="@id/button3"
+                android:text="Custom Title Activity" />
+
+            <SeekBar
+                android:id="@+id/seekBar1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/button_custom_title"
+                android:layout_marginTop="16dp" />
+        </RelativeLayout>
+    </ScrollView>
+
 </RelativeLayout>

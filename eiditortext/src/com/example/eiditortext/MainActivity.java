@@ -64,7 +64,7 @@ public class MainActivity extends Activity {
 
     public TextView tv = null;
     public TextView ev2 = null;
-    public NoImeEditText et = null;
+    public EditText et = null;
     public ProgressBar pb = null;
     public int m_count = 0;
     //����������Ի���
@@ -89,7 +89,7 @@ public class MainActivity extends Activity {
         tv = (TextView) findViewById(R.id.textView1);
         tv.setTextSize(50);
         ev2 = (EditText) findViewById(R.id.editText2);
-        et = (NoImeEditText) findViewById(R.id.editText1);
+        et = (EditText) findViewById(R.id.editText1);
         ev2.addTextChangedListener(textChangeWatcher);
         ev2.requestFocus();
         ev2.setText(R.string.changesize);
@@ -100,7 +100,18 @@ public class MainActivity extends Activity {
         Button bt = (Button) findViewById(R.id.button1);
         Button bt_camara = (Button) findViewById(R.id.button2);
         pb = (ProgressBar) findViewById(R.id.progressBar1);
-        Button bt_async = (Button) findViewById(R.id.button3);
+        Button noImeBtn = (Button) findViewById(R.id.button3);
+        noImeBtn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent();
+                intent.setClass(MainActivity.this, NoImeActivity.class);
+                startActivity(intent);  
+			}
+		});
+        Button bt_async = (Button) findViewById(R.id.button4);
         //bt.setOnClickListener(clicklistener);
         bt_async.setOnClickListener(new OnClickListener() {  
             @Override  
@@ -185,7 +196,7 @@ public class MainActivity extends Activity {
         });
         Log.v("zsww",et.getText().toString());
         
-        Button bt_share = (Button)findViewById(R.id.button4);
+        Button bt_share = (Button)findViewById(R.id.button5);
         bt_share.setOnClickListener(new OnClickListener() {
            @Override
            public void onClick(View v){
@@ -199,6 +210,18 @@ public class MainActivity extends Activity {
                //startActivity(Intent.createChooser(intent, getTitle()));
            }
         });
+        
+        Button customTitleBtn = (Button)findViewById(R.id.button_custom_title);
+        customTitleBtn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent();
+                intent.setClass(MainActivity.this, TestCustomTitleActivity.class);
+                startActivity(intent);  
+			}
+		});
     }
 
     /**

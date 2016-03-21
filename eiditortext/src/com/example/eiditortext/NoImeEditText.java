@@ -7,11 +7,17 @@ import android.content.Context;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 public class NoImeEditText extends EditText {
 
+	private CustomSecurityKeyboard mSecurityKeyboard;
+	private InputConnection mInputConnection;
+	
 	public NoImeEditText(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		// TODO Auto-generated constructor stub
@@ -27,6 +33,9 @@ public class NoImeEditText extends EditText {
             if (imm != null) {
                 imm.hideSoftInputFromWindow(getWindowToken(), 0);
             }
+		} else if(event.getAction() == MotionEvent.ACTION_UP && mSecurityKeyboard != null && 
+				mSecurityKeyboard.getVisibility() != View.VISIBLE) {
+			showKeyboard();
 		}
 		return super.onTouchEvent(event);
 	}
@@ -68,6 +77,42 @@ public class NoImeEditText extends EditText {
 			}
 		}
 	}
-
+	
+	public void setSecurityKeyboard(CustomSecurityKeyboard keyboard) {
+		mSecurityKeyboard = keyboard;
+	}
+	
+	public boolean showKeyboard() {
+		if(mSecurityKeyboard != null && mSecurityKeyboard.getVisibility() != View.VISIBLE) {
+			mSecurityKeyboard.showKeyboard();
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean hideKeyboard() {
+		if(mSecurityKeyboard != null && mSecurityKeyboard.getVisibility() == View.VISIBLE) {
+			mSecurityKeyboard.hideKeyboard();
+			return true;
+		}
+		return false;
+	}
+	
+	public int getKeyboardVisibility() {
+		if(mSecurityKeyboard != null) {
+			return mSecurityKeyboard.getVisibility();
+		}
+		return View.INVISIBLE;
+	}
+	
+	@Override
+	public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
+		// TODO Auto-generated method stub
+		mInputConnection = super.onCreateInputConnection(outAttrs);
+		if(mSecurityKeyboard != null) {
+			mSecurityKeyboard.setInputConnection(mInputConnection);
+		}
+		return mInputConnection;
+	}
 	
 }

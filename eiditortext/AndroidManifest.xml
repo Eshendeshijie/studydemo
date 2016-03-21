@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="11"
         android:targetSdkVersion="17" />
 		<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
@@ -39,5 +39,11 @@
             </intent-filter>
         </activity>
         <activity android:name="com.example.eiditortext.NewsRSS"></activity>
+        <activity android:name="com.example.eiditortext.NoImeActivity"
+            android:theme="@style/NoTitlebarTheme"
+            android:label="自定义键盘"></activity>
+        <activity android:name="com.example.eiditortext.TestCustomTitleActivity"
+            android:theme="@style/NoTitlebarTheme"
+            android:label="自定义标题栏"></activity>
     </application>
 </manifest>
