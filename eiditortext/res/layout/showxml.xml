@@ -24,15 +24,29 @@
                 android:text="获取url的xml" />
 
             <Button
-                android:id="@+id/pullxml"
-                android:layout_toRightOf="@id/pullmethod"
+                android:id="@+id/pull_xml"
+                android:layout_below="@id/pullmethod"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="pull方式解析" />
+                android:text="pull解析" />
+            <Button
+                android:id="@+id/dom_xml"
+                android:layout_toRightOf="@id/pull_xml"
+                android:layout_alignTop="@id/pull_xml"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DOM解析" />
+            <Button
+                android:id="@+id/sax_xml"
+                android:layout_toRightOf="@id/dom_xml"
+                android:layout_alignTop="@id/pull_xml"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SAX解析" />
 
             <TextView
                 android:id="@+id/cityweather"
-                android:layout_below="@id/locationBtn"
+                android:layout_below="@id/pull_xml"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="显示xml" />

@@ -106,12 +106,12 @@
                 android:text="异步下载图片" />
 
             <Button
-                android:id="@+id/pullxml"
+                android:id="@+id/progress_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@id/button2"
                 android:layout_toRightOf="@id/button2"
-                android:text="加载xml文件" />
+                android:text="加载进度条" />
 
             <Button
                 android:id="@+id/newsrss"
@@ -136,6 +136,14 @@
                 android:layout_marginTop="16dp"
                 android:layout_below="@id/button3"
                 android:text="Custom Title Activity" />
+            
+            <Button
+                android:id="@+id/pullxml"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/button_custom_title"
+                android:layout_toRightOf="@id/button_custom_title"
+                android:text="解析天气" />
 
             <SeekBar
                 android:id="@+id/seekBar1"

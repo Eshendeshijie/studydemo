@@ -122,9 +122,10 @@ public class MainActivity extends Activity {
                 //task.execute("http://t1.baidu.com/it/u=http%3A%2F%2Fwww.cenews.com.cn%2Ffzxw%2Ffzyw%2F201403%2FW020140305346571446884.jpg&fm=30");  
             }  
         });
-        Button bt_pullxml = (Button) findViewById(R.id.pullxml);
+        Button parseXmlBtn = (Button) findViewById(R.id.pullxml);
+        Button progressBtn = (Button) findViewById(R.id.progress_btn);
 
-        bt_pullxml.setOnClickListener(new Button.OnClickListener() {
+        progressBtn.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v)
             {
@@ -173,18 +174,14 @@ public class MainActivity extends Activity {
                
             }
         });
-//        bt_pullxml.setOnClickListener(new OnClickListener() {  
-//            @Override  
-//            public void onClick(View v) {  
-//                Intent intent = new Intent();
-////                Bundle bundle = new Bundle();
-////                bundle.putString("Key_height", editText1.getText().toString());
-////                bundle.putString("Key_weight", editText2.getText().toString());
-////                intent.putExtras(bundle);
-//                intent.setClass(MainActivity.this, PullXml.class);
-//                startActivity(intent);  
-//            }  
-//        });
+        parseXmlBtn.setOnClickListener(new OnClickListener() {  
+            @Override  
+            public void onClick(View v) {  
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, PullXml.class);
+                startActivity(intent);  
+            }  
+        });
         Button bt_rss = (Button) findViewById(R.id.newsrss);
         bt_rss.setOnClickListener(new OnClickListener() {  
             @Override  

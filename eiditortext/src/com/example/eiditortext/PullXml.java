@@ -32,6 +32,14 @@ import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -47,16 +55,28 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 public class PullXml extends Activity {
     public TextView textxml = null;
-    public ArrayList<City> WeatherInfo = new ArrayList<City>();
+    public static ArrayList<City> WeatherInfo = new ArrayList<City>();
     private final String WEATHER_URL_START = "http://php.weather.sina.com.cn/xml.php?city=";
     private final String WEATHER_URL_END = "&password=DJOYnieT8234jlsK&day=0";
     private String mCurrentCity = "北京";
+    private Context mContext;
+    private String domResult = "";
+    private String saxResult = "";
+    private final String INDENT_DEFAULT = "  ";
+    private int mPraseNum = 0;
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.showxml);
+        mContext = getApplicationContext();
         LayoutInflater inflater = getLayoutInflater();
         textxml = (TextView) findViewById(R.id.cityweather);
         Button locationBtn = (Button) findViewById(R.id.locationBtn);
@@ -88,42 +108,49 @@ public class PullXml extends Activity {
                 task.execute(getCityUrl(mCurrentCity));  
             }  
         });
-        Button  bt_pull = (Button) findViewById(R.id.pullxml);
-        bt_pull.setOnClickListener(new OnClickListener() {  
-            @Override  
-            public void onClick(View v) {  
-                  if(CityWeather == null){
-                      
-                  }
-                else {
-                    //  XmlPullParserFactory
-                    XmlPullParserFactory factory;
-                    try {
-                        factory = XmlPullParserFactory.newInstance();
-                        //  XmlPullParser
-                        XmlPullParser parser = factory.newPullParser();
-                        // 解析节点数据
-                        parser.setInput(new StringReader(CityWeather));
-                        WeatherInfo = ParseXml(parser);
-                        if(WeatherInfo == null){
-                            Log.v("zsww","pull wrong!!");
-                            return;
-                        }
-                        Log.v("zsww","WeatherInfo==="+WeatherInfo);
-                        Log.v("zsww","WeatherInfo==="+WeatherInfo.get(0).status);
-                        for(int i = 0; i < WeatherInfo.size(); i++){
-                            textxml.setText(WeatherInfo.get(i).cityName+"  "+WeatherInfo.get(i).status
-                                    +"  "+WeatherInfo.get(i).temperature);
-                        }
-                        
-                    } catch (XmlPullParserException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-
-                }
-            }  
-        });
+        Button  pullBtn = (Button) findViewById(R.id.pull_xml);
+        pullBtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				WeatherInfo = ParseXmlByPull(CityWeather);
+				if (WeatherInfo == null) {
+					Log.v("zsww", "pull wrong!!");
+					return;
+				}
+				Log.v("zsww", "WeatherInfo===" + WeatherInfo);
+				Log.v("zsww", "WeatherInfo===" + WeatherInfo.get(0).status);
+				for (int i = 0; i < WeatherInfo.size(); i++) {
+					textxml.setText(WeatherInfo.get(i).cityName + "  " + WeatherInfo.get(i).status + "  "
+							+ WeatherInfo.get(i).temperature);
+				}
+			}
+		});
+		Button  domBtn = (Button) findViewById(R.id.dom_xml);
+		domBtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				domResult = "";
+				mPraseNum = 0;
+				ParseXmlByDOM(CityWeather);
+				if (domResult == null || domResult == "") {
+					Log.v("zsww", "pull wrong!!");
+					return;
+				}
+				textxml.setText(domResult);
+			}
+		});
+		Button  saxBtn = (Button) findViewById(R.id.sax_xml);
+		saxBtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				saxResult = ParseXmlBySAX(CityWeather);
+				if (saxResult == null || saxResult == "") {
+					Log.v("zsww", "pull wrong!!");
+					return;
+				}
+				textxml.setText(saxResult);
+			}
+		});
     }
     
     public String CityWeather = null;
@@ -143,10 +170,10 @@ public class PullXml extends Activity {
 
         protected void onPostExecute(String result) {
             if (result != null) {
-                Toast.makeText(PullXml.this, "解析成功", Toast.LENGTH_LONG).show();
+                Toast.makeText(PullXml.this, "加载成功", Toast.LENGTH_LONG).show();
                 textxml.setText(CityWeather);
             } else {
-                Toast.makeText(PullXml.this, "解析失败", Toast.LENGTH_LONG).show();
+                Toast.makeText(PullXml.this, "加载失败", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -270,7 +297,27 @@ public class PullXml extends Activity {
         }
     }
     
-    public static ArrayList<City> ParseXml(XmlPullParser parser){
+    
+    //pull方式解析
+    public static ArrayList<City> ParseXmlByPull(String CityWeather){
+    	XmlPullParser parser = null;
+    	XmlPullParserFactory factory;
+		if (CityWeather == null) {
+			return null;
+		} else {
+			// XmlPullParserFactory
+			try {
+				factory = XmlPullParserFactory.newInstance();
+				// XmlPullParser
+				parser = factory.newPullParser();
+				// 解析节点数据
+				parser.setInput(new StringReader(CityWeather));
+			} catch (XmlPullParserException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if(parser == null) return null;
         ArrayList<City> CityArray = new ArrayList<City>();
         City CityTemp = null;
         String temperature = null;
@@ -278,19 +325,19 @@ public class PullXml extends Activity {
         String status = null;
         CityTemp = new City();
         try {
-            //��ʼ�����¼�
+            //获取节点
             int eventType = parser.getEventType();
 
-            //�����¼����������ĵ�������һֱ����
+            //开始节点
             while (eventType != XmlPullParser.END_DOCUMENT) {
-                //��Ϊ������һ�Ѿ�̬�������������������switch
+                //解析不同节点
                 switch (eventType) {
                     case XmlPullParser.START_DOCUMENT:
                         break;
 
                     case XmlPullParser.START_TAG:
 
-                        //����ǰ��ǩ�������
+                        //获取名字
                         String tagName = parser.getName();
                         Log.d("zsww", "====XmlPullParser.START_TAG=== tagName: " + tagName);
 
@@ -321,7 +368,7 @@ public class PullXml extends Activity {
                         break;
                 }
 
-                //��������next����������һ���¼������˵Ľ���ͳ���ѭ��#_#
+                //获取下一个节点
                 eventType = parser.next();
             }
         } catch (XmlPullParserException e) {
@@ -332,6 +379,117 @@ public class PullXml extends Activity {
             e.printStackTrace();
         }
         return CityArray;
+    }
+    
+    //DOM方式解析
+    public String ParseXmlByDOM(String CityWeather){
+    	if(TextUtils.isEmpty(CityWeather)) {
+    		return null;
+    	}
+    	DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+    	DocumentBuilder domBuilder = null;
+    	Document document = null;
+    	Element root = null;
+    	NodeList nodes = null;
+    	try {
+    		//忽略空白的接口不起作用
+    		domFactory.setIgnoringElementContentWhitespace(true);
+    		domFactory.setIgnoringComments(true);
+    		domBuilder = domFactory.newDocumentBuilder();
+			document = domBuilder.parse(new InputSource(new StringReader(CityWeather)));
+    		//document = domBuilder.parse(mContext.getResources().getAssets().open("newsrss.xml"));
+    		root = document.getDocumentElement();
+			nodes = root.getChildNodes();
+			displayNodes(nodes);
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return domResult;
+    }
+    
+    //遍历DOM节点和属性
+    //getNodeName():获取节点名字
+    //getAttributes():获取节点的属性列表
+    //getTextContent():获取当前节点内的所有文本值
+    public String displayNodes(NodeList Nlist){
+    	mPraseNum += 1;
+    	String INDENT_ELEMENT = "";
+    	String INDENT_ATTRS = "";
+    	Log.v("zsw_show", "mPraseNum : "+mPraseNum);
+    	for(int i = 0; i < mPraseNum - 1; i++) {
+    		INDENT_ELEMENT += INDENT_DEFAULT;
+    	}
+    	INDENT_ATTRS = INDENT_ELEMENT + INDENT_DEFAULT;
+    	String SPILIT = ": ";
+    	String ENTER = "\n";
+    	//遍历节点
+        for (int i = 0; i <Nlist.getLength(); i++) {
+            Node node = Nlist.item(i);
+            if(node.hasChildNodes()){//判断该节点是否还有子节点
+                NodeList list = node.getChildNodes();
+                //如果节点仅有一个子节点，并且该节点为TEXT_NODE，则该子节点为节点的值
+                if(list.getLength() == 1 && list.item(0).getNodeType() == Node.TEXT_NODE) {
+                	domResult += INDENT_ELEMENT + node.getNodeName()+ SPILIT + node.getTextContent() + ENTER;
+                }
+                //否则为父节点
+                else {
+                	domResult += INDENT_ELEMENT + node.getNodeName() + ENTER;
+                }
+                //遍历属性
+                NamedNodeMap map = node.getAttributes();
+                for(int j = 0; j < map.getLength(); j++) {
+                	domResult += INDENT_ATTRS + map.item(j).getNodeName() + SPILIT + map.item(j).getNodeValue() + ENTER;
+                }
+                displayNodes(list);  //调用方法本身
+            } else {
+            	//以‘/>’结尾的节点
+            	if(node.getNodeType() == Node.ELEMENT_NODE) {
+            		domResult += INDENT_ELEMENT + node.getNodeName() + ENTER;
+            		NamedNodeMap map = node.getAttributes();
+            		for(int j = 0; j < map.getLength(); j++) {
+                    	domResult += INDENT_ATTRS + map.item(j).getNodeName() + SPILIT + map.item(j).getNodeValue() + ENTER;
+                    }
+            	}
+            }
+        }
+        return domResult;
+    }
+    
+    //SAX方式解析
+    public String ParseXmlBySAX(String CityWeather){
+    	CityWeather = CityWeather.replace("\n", "");
+    	SAXParserFactory saxParserFactory =SAXParserFactory.newInstance();
+    	String result = "";
+    	try {
+    		SAXPraseHandler praseHandler = new SAXPraseHandler();
+			SAXParser saxParser = saxParserFactory.newSAXParser();
+			XMLReader xmlReader = saxParser.getXMLReader();
+			xmlReader.setContentHandler(praseHandler);
+			saxParser.parse(new InputSource(new StringReader(CityWeather)), praseHandler);
+			result = praseHandler.getResult();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return result;
+    }
+    
+    //SAX方式解析
+    public static ArrayList<City> ParseXmlByUtil(String CityWeather){
+    	return null;
     }
     
     //定位位置

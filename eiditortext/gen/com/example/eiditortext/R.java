@@ -30,32 +30,36 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int action_settings=0x7f09001a;
+        public static final int action_settings=0x7f09001e;
         public static final int button1=0x7f090003;
         public static final int button2=0x7f090004;
         public static final int button3=0x7f090005;
         public static final int button4=0x7f090006;
         public static final int button5=0x7f09000b;
         public static final int button_custom_title=0x7f09000c;
-        public static final int cityweather=0x7f090019;
-        public static final int custom_activity_back=0x7f09000f;
-        public static final int custom_activity_title=0x7f09000e;
-        public static final int custom_keyboard=0x7f090016;
+        public static final int cityweather=0x7f09001d;
+        public static final int custom_activity_back=0x7f090010;
+        public static final int custom_activity_title=0x7f09000f;
+        public static final int custom_keyboard=0x7f090017;
+        public static final int dom_xml=0x7f09001b;
         public static final int editText1=0x7f090002;
         public static final int editText2=0x7f090001;
         public static final int image=0x7f090007;
-        public static final int locationBtn=0x7f090017;
-        public static final int newsdes=0x7f090012;
-        public static final int newsedittext=0x7f090013;
-        public static final int newsimage=0x7f090010;
-        public static final int newslist=0x7f090014;
+        public static final int locationBtn=0x7f090018;
+        public static final int newsdes=0x7f090013;
+        public static final int newsedittext=0x7f090014;
+        public static final int newsimage=0x7f090011;
+        public static final int newslist=0x7f090015;
         public static final int newsrss=0x7f09000a;
-        public static final int newstitle=0x7f090011;
-        public static final int no_ime_edit=0x7f090015;
+        public static final int newstitle=0x7f090012;
+        public static final int no_ime_edit=0x7f090016;
         public static final int progressBar1=0x7f090008;
-        public static final int pullmethod=0x7f090018;
-        public static final int pullxml=0x7f090009;
-        public static final int seekBar1=0x7f09000d;
+        public static final int progress_btn=0x7f090009;
+        public static final int pull_xml=0x7f09001a;
+        public static final int pullmethod=0x7f090019;
+        public static final int pullxml=0x7f09000d;
+        public static final int sax_xml=0x7f09001c;
+        public static final int seekBar1=0x7f09000e;
         public static final int textView1=0x7f090000;
     }
     public static final class layout {
