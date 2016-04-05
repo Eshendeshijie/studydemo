@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">eiditortext</string>
+    <string name="app_name">Study Demo</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">根据编辑框的内容变化</string>
     <string name="changesize">输入大小，单位为sp</string>

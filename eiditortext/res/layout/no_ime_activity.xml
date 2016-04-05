@@ -3,13 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <com.example.eiditortext.NoImeEditText 
+    <com.example.studydemo.NoImeEditText 
         android:id="@+id/no_ime_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"/>
     
-    <com.example.eiditortext.CustomSecurityKeyboard 
+    <com.example.studydemo.CustomSecurityKeyboard 
         android:id="@+id/custom_keyboard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
